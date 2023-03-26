@@ -15,6 +15,7 @@ LLVM                       |-    |***
 1. ~~[life-triangle-nvidias-logical-pipeline](https://developer.nvidia.com/content/life-triangle-nvidias-logical-pipeline)~~
 2. LearnOpenGL
 3. [GAMES 101 作业3：渲染小奶牛](https://zhuanlan.zhihu.com/p/465058581)
+4. [GPU Gems 3](https://developer.nvidia.com/gpugems/gpugems3/contributors)
 
 ## Compiler
 1. [Crafting Interpreters](http://craftinginterpreters.com/welcome.html)
