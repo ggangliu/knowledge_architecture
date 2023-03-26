@@ -16,7 +16,7 @@ LLVM                       |-    |***
 2. LearnOpenGL
 3. [GAMES 101 作业3：渲染小奶牛](https://zhuanlan.zhihu.com/p/465058581)
 4. [GPU Gems 3](https://developer.nvidia.com/gpugems/gpugems3/contributors)
-5. [Ray Tracing in one weekend](https://raytracing.github.io/)
+5. [Ray Tracing in one weekend](https://github.com/RayTracing)
 ## Compiler
 1. [Crafting Interpreters](http://craftinginterpreters.com/welcome.html)
 2. Compilers: Principles, Techniques, and Tools
