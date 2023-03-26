@@ -11,6 +11,13 @@ LLVM                       |-    |***
 1. GPGPU
 2. Computer Architecture
 
+## Digital Design
+1. Amaranth HDL
+    - [Wishbone](https://wishbone-interconnect.readthedocs.io/en/latest/01_introduction.html)
+        - Interface
+        - Arbiter
+        - Decoder
+
 ## Computer Graphic
 1. ~~[life-triangle-nvidias-logical-pipeline](https://developer.nvidia.com/content/life-triangle-nvidias-logical-pipeline)~~
 2. LearnOpenGL
