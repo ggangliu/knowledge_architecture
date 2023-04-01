@@ -42,3 +42,4 @@ LLVM                       |-    |***
 ### Markdown
 
 1. [Markdown画图](https://blog.csdn.net/qq_32708605/article/details/123801702)
+2. [Creating diagrams](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams#creating-mermaid-diagrams)
