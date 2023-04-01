@@ -36,3 +36,9 @@ LLVM                       |-    |***
 
 1. Getting started with LLVM Core Libraries
 2. Learn LLVM 12
+3. [LLVM笔记](https://www.cnblogs.com/Five100Miles/category/1438128.html)
+4. TutorialLLVMBackendCpu0.pdf
+
+### Markdown
+
+1. [Markdown画图](https://blog.csdn.net/qq_32708605/article/details/123801702)
