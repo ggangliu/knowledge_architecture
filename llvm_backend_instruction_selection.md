@@ -63,6 +63,11 @@ LLVM IR到指令选择之间的一些主要流程及各阶段中的存在形式
 ### 寄存器合并器
   寄存器合并器通过合并代码区间来删除多余的复制指令(COPY)。
   
+### 虚拟寄存器重写
+  寄存器分配流程为每个虚拟寄存器选择物理寄存器。之后，VirtRegMap负责保存寄存器分配的结果，因此它包含从虚拟寄存器到物理寄存器的映射。接下来虚拟寄存器重写流程（/lib/CodeGen/VirtRegMap.cpp中VirtRegRewriter类）使用VirtRegMap并将虚拟寄存器引用替换为物理寄存器引用，同时生成相应的溢出代码。此外 reg = COPY reg的剩余自身拷贝也被删除。
+  
 ## 调试  
   
-> 📝: **Notes** 可以使用-debug-only选项为特定的LLVM流程或组件启用内部调试信息。若要寻找某个要调试的组件，在LLVM源代码文件夹中运行grep -r "DEBUG_TYPE" *。  DEBUG_TYPE宏定义了可以激活当前文件的调试消息的标志选项
+> 📝: **Notes** 
+  - llc程序选项 -debug或者-debug-only=<name>仅在LLVM以调试模式（配置时使用--disable-optimized）编译是才可用
+  - 可以使用-debug-only选项为特定的LLVM流程或组件启用内部调试信息。若要寻找某个要调试的组件，在LLVM源代码文件夹中运行grep -r "DEBUG_TYPE" *。  DEBUG_TYPE宏定义了可以激活当前文件的调试消息的标志选项
