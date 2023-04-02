@@ -1,4 +1,12 @@
 # LLVM IR -> Lower IR before instruction selection
+LLVM后端主要流程
+
+```mermaid
+graph TD
+  A1[LLVM IR] --> B1[Pass] --> A2[SelectionDAG] --> A3[指令调度] --> B2[Pass] --> A4[寄存器分配] --> B3[Pass];
+  B3[Pass] --> A5[指令调度] --> B4[Pass] --> A6[代码导出];
+  A6[代码导出] --> A7[汇编代码] & A8[目标代码];
+```
 
 LLVM IR到指令选择之间的一些主要流程及各阶段中的存在形式
 
@@ -44,10 +52,17 @@ LLVM IR到指令选择之间的一些主要流程及各阶段中的存在形式
 
 ### 竞争检测
   竞争识别器通过使用处理器的指令执行进度表中的信息计算竞争关系。ScheduleHazardRecognizer类型实现竞争识别器的接口，而ScoreboardHazardRecognizer子类实现了基于记分板的竞争识别器，也是LLVM默认的竞争识别器
+
+## 寄存器分配
+  寄存器分配的主要任务是将数量无限的虚拟寄存器转换为物理（有限）寄存器。由于编译目标的物理寄存器数量有限，因此需要为一些虚拟寄存器分配对应的内存地址，即溢出地址(spill slots)。但是有些机器指令需要用到特定寄存器来存储结果，或者ABI有某些特殊的规定，因此一些MI代码可能在寄存器分配之前就已经使用了物理寄存器。LLVM寄存器分配有4个实现，可以使用lcc的-regalloc=<regalloc_name>选择使用<pbqp, greedy, basic, fast>。寄存器分配的主要流程如下所示：
+  ```mermaid
+  graph TD
+    A1[机器指令类MachineInstr] --虚拟寄存器--> B1[流程] --> A2[寄存器合并器] --> B2[流程] --> A3[寄存器分配];
+    A3[寄存器分配] --> B3[流程] --> A4[虚拟寄存器重写] --物理寄存器--> A5[机器指令类MachineInstr];
+  ```
+### 寄存器合并器
+  寄存器合并器通过合并代码区间来删除多余的复制指令(COPY)。
   
-```mermaid
-graph TD
-
-A1[LLVM IR] --> A2[SelectionDAG]
-
-```
+## 调试  
+  
+> 📝: **Notes** 可以使用-debug-only选项为特定的LLVM流程或组件启用内部调试信息。若要寻找某个要调试的组件，在LLVM源代码文件夹中运行grep -r "DEBUG_TYPE" *。  DEBUG_TYPE宏定义了可以激活当前文件的调试消息的标志选项
