@@ -11,6 +11,7 @@ LLVM                       |-    |***
 
 1. GPGPU
 2. Computer Architecture
+    - ISA: lw, sw, add, sub, and, or, slt, beq, j
 
 ## Digital Design
 
@@ -19,6 +20,12 @@ LLVM                       |-    |***
       - Interface
       - Arbiter
       - Decoder
+2. Logic design basics
+    - Combinational element
+        - Operate on data
+        - Output is a function of input
+    - Sequentail element
+        - Store information
 
 ## Computer Graphic
 
