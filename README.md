@@ -8,10 +8,12 @@ Compiler                   |-    |***
 LLVM                       |-    |***
 
 ## Computer architecture
+
 1. GPGPU
 2. Computer Architecture
 
 ## Digital Design
+
 1. Amaranth HDL
     - [Wishbone](https://wishbone-interconnect.readthedocs.io/en/latest/01_introduction.html)
       - Interface
@@ -30,7 +32,7 @@ LLVM                       |-    |***
 ## Compiler
 
 1. [Crafting Interpreters](http://craftinginterpreters.com/welcome.html)
-3. Compilers: Principles, Techniques, and Tools
+2. Compilers: Principles, Techniques, and Tools
 
 ### LLVM
 
