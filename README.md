@@ -11,7 +11,7 @@ LLVM                       |-    |***
 
 1. GPGPU
 2. Computer Architecture
-    - ISA: lw, sw, add, sub, and, or, slt, beq, j
+    - ISA: lw, sw, add, sub, addi, and, or, slt, beq, j
 
 ## Digital Design
 
