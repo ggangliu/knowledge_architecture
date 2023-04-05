@@ -1,4 +1,4 @@
-# Knowledge_architecture
+# Knowledge Architecture
 
 Domain                     |Level|Target
 :--------------------------|:----|:-----
@@ -8,7 +8,7 @@ Computer Graphic           |*    |***
 Compiler                   |-    |***
 LLVM                       |*    |***
 
-## Computer architecture
+## Computer Architecture
 
 1. GPGPU
 2. Computer Architecture
