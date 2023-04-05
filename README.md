@@ -1,11 +1,12 @@
 # Knowledge_architecture
 
-Domain  |Level|Target
-:---------------------------|:----|:-----
+Domain                     |Level|Target
+:--------------------------|:----|:-----
 Computer architecture      |*    |***
+Digital Design             |*    |***
 Computer Graphic           |*    |***
 Compiler                   |-    |***
-LLVM                       |-    |***
+LLVM                       |*    |***
 
 ## Computer architecture
 
