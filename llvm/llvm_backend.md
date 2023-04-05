@@ -114,6 +114,8 @@ def SUB {       // Insn
 
 ## Instruction selection
 
+[llvm_backend_instruction_selection.md](./llvm_backend_instruction_selection.md)
+
 ## Instruction scheduling and register allocation
 
 ## Code emission

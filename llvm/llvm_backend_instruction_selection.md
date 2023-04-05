@@ -22,6 +22,8 @@ LLVM IR到指令选择之间的一些主要流程及各阶段中的存在形式
 |7     |SelectionDAG |- 指令选择后该结构具有代表实际指令的节点，这些指令能直接运行在目标处理器上 <br> - 对SelectionDAG的节点SDNode进行寄存器预分配[调度](#调度器) <br> - SUnit类在指令调度期间将底层指令表示抽象为调度单元 <br> - llc工具使用-view-sunit-dags来打印调度单元 |
 |8.机器指令|MachineInstr |- 在指令调度之后运行的InstrEmitter流程将SDNode格式转换为MachineInstr格式 <br> - SDNode指令表示形式仅在寄存器分配之前可用，寄存器分配器的处理对象是由MachineInst类提供的指令表示形式 <br> -顾名思义，这个表示比IR更接近实际的目标指令。与SDNode格式及其DAG形式不同，MI格式是程序的三地址表示，是指令序列而不是DAG图 <br> -每个MI都包含有一个操作码号码和一个操作数列表，其中操作码是一个只对特定后端有意义的数字 <br> - 通过-print-machineinstrs选项可以打印已注册流程 |
 |9.寄存器分配|  |- 将数量不限的虚拟寄存器转换为有限的物理寄存器 <br> - 由于某些机器指令需要用到特定寄存器来存储结果，或者ABI有某些特殊规定，因此一些MI代码可能在寄存器分配之前就已经使用了物理寄存器，对于这些情况寄存器分配器需要遵循已有的分配结果 <br> - 解构IR的SSA形式 |
+|10.Prologue and Epilogue | |- sets up the stack frame and callee-saved registers FrameLowering::emitPrologue() <br> - cleans up the stack frame prior to function return FrameLowering::emitEpilogue() <br> - eliminateFrameIndex() |
+|11.Machine Code Framework |MCInst | - AsmPrinter |
 
 ## 模式匹配
 
@@ -56,10 +58,13 @@ LLVM IR到指令选择之间的一些主要流程及各阶段中的存在形式
   编译目标可以为单一处理器架构或处理器系列定义指令的执行进程表。为此，编译目标必须提供关于执行单元（FuncUnit）、管道旁路（Bypass）和指令执行进程数据（InstrItinData）的列表。
 
 ### 竞争检测
+
   竞争识别器通过使用处理器的指令执行进度表中的信息计算竞争关系。ScheduleHazardRecognizer类型实现竞争识别器的接口，而ScoreboardHazardRecognizer子类实现了基于记分板的竞争识别器，也是LLVM默认的竞争识别器
 
 ## 寄存器分配
+
   寄存器分配的主要任务是将数量无限的虚拟寄存器转换为物理（有限）寄存器。由于编译目标的物理寄存器数量有限，因此需要为一些虚拟寄存器分配对应的内存地址，即溢出地址(spill slots)。但是有些机器指令需要用到特定寄存器来存储结果，或者ABI有某些特殊的规定，因此一些MI代码可能在寄存器分配之前就已经使用了物理寄存器。LLVM寄存器分配有4个实现，可以使用lcc的-regalloc=<regalloc_name>选择使用<pbqp, greedy, basic, fast>。寄存器分配的主要流程如下所示：
+  
   ```mermaid
   graph TD
     A1[机器指令类MachineInstr] --虚拟寄存器--> B1[流程] --> A2[寄存器合并器] --> B2[流程] --> A3[寄存器分配];
@@ -73,9 +78,47 @@ LLVM IR到指令选择之间的一些主要流程及各阶段中的存在形式
 ### 虚拟寄存器重写
 
   寄存器分配流程为每个虚拟寄存器选择物理寄存器。之后，VirtRegMap负责保存寄存器分配的结果，因此它包含从虚拟寄存器到物理寄存器的映射。接下来虚拟寄存器重写流程（/lib/CodeGen/VirtRegMap.cpp中VirtRegRewriter类）使用VirtRegMap并将虚拟寄存器引用替换为物理寄存器引用，同时生成相应的溢出代码。此外 reg = COPY reg的剩余自身拷贝也被删除。
-  
+
+### Target hooks
+
+- isLoadFromStackSlot() and isStoreToStackSlot()
+- storeRegToStackSlot() and loadRegFromStackSlot()
+- copyPhyReg() method is used to generate a target-specific register copy
+- BuildMI() method is used everywhere in the code generator to generate machine instructions
+
+## Understanding the machine code framework
+
+### Code emission
+
+![Code emission](../images/machine-code-framework.png)
+
+All the steps from an MI instruction to MCInst
+
+  ```mermaid
+  graph TD
+  A1[MachineInstr] ---> B1[AsmPrinter] ---> A2[MCInst] ---> B2[MCStreamer]
+  B2[MCStreamer] -.-> A6[MCAsmStreamer] ---> A3[MCInstPrinter] ---> B3[Assembly instruction]
+  B2[MCStreamer] -.-> A7[MCObjectStreamer] ---> A4[Assembler] ---> A5[MCCodeEmitter] ---> B4[Binary instruction]
+  B1[AsmPrinter] <-.-> B5[MCInstLowering.lower]
+
+  ```
+
+  ```#!/bash/sh
+  $
+  $ llc sum.bc -march=x86-64 -show-mc-inst -o -
+  $ llc sum.bc -march=x86-64 -show-mc-encoding -o -
+  $ echo "movq 48879(, %riz), %rax" | llvm-mc -triple=x86_64 --show-encoding
+  $ echo "0x8d 0x4c 0x24 0x04" | llvm-mc --disassemble -show-inst -triple=x86_64
+  ```
+
+## Writing your own machine pass
+
+- SparcPassConfig
+
 ## 调试  
   
-> 📝: **Notes** 
-  - llc程序选项 -debug或者-debug-only=<name>仅在LLVM以调试模式（配置时使用--disable-optimized）编译是才可用
-  - 可以使用-debug-only选项为特定的LLVM流程或组件启用内部调试信息。若要寻找某个要调试的组件，在LLVM源代码文件夹中运行grep -r "DEBUG_TYPE" *。  DEBUG_TYPE宏定义了可以激活当前文件的调试消息的标志选项
+> 📝: **Notes**
+
+- llc程序选项 -debug或者-debug-only=<name>仅在LLVM以调试模式（配置时使用--disable-optimized）编译是才可用
+
+- 可以使用-debug-only选项为特定的LLVM流程或组件启用内部调试信息。若要寻找某个要调试的组件，在LLVM源代码文件夹中运行grep -r "DEBUG_TYPE" *。  DEBUG_TYPE宏定义了可以激活当前文件的调试消息的标志选项
