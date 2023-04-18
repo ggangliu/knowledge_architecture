@@ -31,11 +31,13 @@ LLVM                       |*    |***
 ## Computer Graphic
 
 1. ~~[life-triangle-nvidias-logical-pipeline](https://developer.nvidia.com/content/life-triangle-nvidias-logical-pipeline)~~
-2. LearnOpenGL
+2. [LearnOpenGL](https://learnopengl.com/)
 3. [GAMES 101 作业3：渲染小奶牛](https://zhuanlan.zhihu.com/p/465058581)
+   - [Games101-作业3](https://zhuanlan.zhihu.com/p/419872527)
 4. [GPU Gems 3](https://developer.nvidia.com/gpugems/gpugems3/contributors)
 5. [Ray Tracing in one weekend](https://github.com/RayTracing)
 6. Real-Time Rendering
+7. [Getting_Started](https://www.khronos.org/opengl/wiki/Getting_Started)
 
 ## Compiler
 
